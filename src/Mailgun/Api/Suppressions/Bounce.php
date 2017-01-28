@@ -23,6 +23,14 @@ class Bounce extends HttpApi
     use Pagination;
 
     /**
+     * @return string
+     */
+    protected function getPaginationBase()
+    {
+        return IndexResponse::class;
+    }
+
+    /**
      * @param string $domain
      *
      * @return IndexResponse
@@ -111,49 +119,5 @@ class Bounce extends HttpApi
         $response = $this->httpDelete(sprintf('/v3/%s/bounces', $domain));
 
         return $this->safeDeserialize($response, DeleteResponse::class);
-    }
-
-    /*
-     * INDEX PAGINATION
-     */
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationNext(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getNextUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationPrevious(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getPreviousUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationFirst(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getFirstUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationLast(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getLastUrl(), IndexResponse::class);
     }
 }

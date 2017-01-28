@@ -23,6 +23,14 @@ class Unsubscribe extends HttpApi
     use Pagination;
 
     /**
+     * @return string
+     */
+    protected function getPaginationResponse()
+    {
+        return IndexResponse::class;
+    }
+
+    /**
      * @param string $domain
      *
      * @return IndexResponse
@@ -32,7 +40,11 @@ class Unsubscribe extends HttpApi
         Assert::notEmpty($domain);
         Assert::range($limit, 1, 10000, 'Limit parameter must be between 1 and 10000');
 
-        $response = $this->httpGet(sprintf('/v3/%s/unsubscribes', $domain));
+        $params = [
+            'limit' => $limit,
+        ];
+
+        $response = $this->httpGet(sprintf('/v3/%s/unsubscribes', $domain), $params);
 
         return $this->safeDeserialize($response, IndexResponse::class);
     }
@@ -53,11 +65,11 @@ class Unsubscribe extends HttpApi
     }
 
     /**
-     * @param string    $domain
-     * @param string    $address
-     * @param string    $code      optional
-     * @param string    $error     optional
-     * @param \DateTime $createdAt optional
+     * @param string         $domain
+     * @param string         $address
+     * @param string|null    $code      optional
+     * @param string|null    $error     optional
+     * @param \DateTime|null $createdAt optional
      *
      * @return CreateResponse
      */
@@ -107,49 +119,5 @@ class Unsubscribe extends HttpApi
         $response = $this->httpDelete(sprintf('/v3/%s/unsubscribes', $domain));
 
         return $this->safeDeserialize($response, DeleteResponse::class);
-    }
-
-    /*
-     * INDEX PAGINATION
-     */
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationNext(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getNextUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationPrevious(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getPreviousUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationFirst(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getFirstUrl(), IndexResponse::class);
-    }
-
-    /**
-     * @param IndexResponse $index
-     *
-     * @return IndexResponse|null
-     */
-    public function getPaginationLast(IndexResponse $index)
-    {
-        return $this->getPaginationUrl($index->getLastUrl(), IndexResponse::class);
     }
 }

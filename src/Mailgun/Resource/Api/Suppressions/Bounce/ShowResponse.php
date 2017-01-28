@@ -38,8 +38,6 @@ class ShowResponse implements ApiResponse
 
     /**
      * @param string $address
-     * @param string $code
-     * @param string $error
      */
     public function __construct($address)
     {
