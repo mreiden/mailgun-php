@@ -85,9 +85,12 @@ class BatchMessage extends MessageBuilder
             }
         }
 
-        $compiledAddress = $this->parseAddress($address, $variables, $nonRecipient = false);
+        $compiledAddress = $this->parseAddress($address, $variables, $nonRecipient);
 
-        if (isset($this->message[$headerName])) {
+        if ($headerName == 'from') {
+            $this->message[$headerName] = [$compiledAddress];
+            return;
+        } elseif (isset($this->message[$headerName])) {
             array_push($this->message[$headerName], $compiledAddress);
         } elseif ($headerName == 'h:reply-to') {
             $this->message[$headerName] = $compiledAddress;
