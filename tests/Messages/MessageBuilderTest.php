@@ -111,6 +111,15 @@ class MessageBuilderTest extends \Mailgun\Tests\MailgunTestCase
         $this->assertEquals(['from' => ["'Test User' <test@samples.mailgun.org>"]], $messageObj);
     }
 
+    public function testSetFromAddressReplaceExisting()
+    {
+        $message = $this->client->MessageBuilder();
+        $message->setFromAddress('test1@samples.mailgun.org', ['first' => 'Test1', 'last' => 'User']);
+        $message->setFromAddress('test2@samples.mailgun.org', ['first' => 'Test2', 'last' => 'User']);
+        $messageObj = $message->getMessage();
+        $this->assertEquals(['from' => ["Test2 User <test2@samples.mailgun.org>"]], $messageObj);
+    }
+
     public function testSetReplyTo()
     {
         $message = $this->client->MessageBuilder();
